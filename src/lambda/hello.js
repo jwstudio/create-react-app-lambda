@@ -1,30 +1,8 @@
-class Timer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { seconds: 0 };
-  }
-
-  tick() {
-    this.setState(state => ({
-      seconds: state.seconds + 1
-    }));
-  }
-
-  componentDidMount() {
-    this.interval = setInterval(() => this.tick(), 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  render() {
-    return (
-      <div>
-        Seconds: {this.state.seconds}
-      </div>
-    );
-  }
+// this uses the callback syntax, however, we encourage you to try the async/await syntax shown in async-dadjoke.js
+export function handler(event, context, callback) {
+  console.log('queryStringParameters', event.queryStringParameters)
+  callback(null, {
+    statusCode: 200,
+    body: JSON.stringify({ msg: 'Hello, World!' }),
+  })
 }
-
-root.render(<Timer />);
