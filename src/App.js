@@ -1,37 +1,50 @@
 import React, { Component } from "react"
 import logo from "./logo.svg"
 import "./App.css"
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
 
-class Timer extends React.Component {
+class LambdaDemo extends Component {
   constructor(props) {
-    super(props);
-    this.state = { seconds: 0 };
+    super(props)
+    this.state = { loading: false, msg: null }
   }
 
-  tick() {
-    this.setState(state => ({
-      seconds: state.seconds + 1
-    }));
-  }
+  handleClick = api => e => {
+    e.preventDefault()
 
-  componentDidMount() {
-    this.interval = setInterval(() => this.tick(), 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
+    this.setState({ loading: true })
+    fetch("/.netlify/functions/" + api)
+      .then(response => response.json())
+      .then(json => this.setState({ loading: false, msg: json.msg }))
   }
 
   render() {
+    const { loading, msg } = this.state
+
     return (
-      <div>
-        Seconds: {this.state.seconds}
-      </div>
-    );
+      <p>
+        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
+        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
+        <br />
+        <span>{msg}</span>
+      </p>
+    )
   }
 }
 
-root.render(<Timer />);
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <LambdaDemo />
+        </header>
+      </div>
+    )
+  }
+}
+
+export default App
